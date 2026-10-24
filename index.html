@@ -4,134 +4,514 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Digital Ghanti</title>
+<title>Digital Ghanti - Smart School Bell</title>
+<meta name="theme-color" content="#17345c">
+
 <style>
-body{font-family:Arial,sans-serif;background:#eef3fa;color:#183153;text-align:center;margin:0}
-header{background:#17345c;color:white;padding:25px}
-h1{margin:0}
-#clock{font-size:48px;font-weight:bold;margin:20px}
-main{max-width:650px;margin:20px auto;padding:20px}
-section{background:white;padding:20px;margin:15px 0;border-radius:14px;box-shadow:0 3px 12px #0001}
-button{padding:12px 18px;margin:5px;border:0;border-radius:8px;background:#1761cf;color:white;cursor:pointer;font-size:16px}
-input{padding:10px;margin:5px;border:1px solid #bbb;border-radius:6px}
-li{padding:10px;text-align:left;border-bottom:1px solid #ddd}
-li button{float:right;padding:5px 9px}
-.ringtone-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
-}
-.ringtone-card {
-  background: white;
-  border: 1px solid #dbe3ef;
-  border-radius: 12px;
-  padding: 15px;
-}
-.ringtone-card h3 {
-  margin-top: 0;
-}
-.ringtone-card p {
-  color: #64748b;
-}
-.ringtone-card button {
-  margin-top: 8px;
-}3ef;   border-radius: 12px;   padding: 15px; } .ringtone-card h3 { margin-top: 0; } .ringtone-card p { color: #64748b; } .ringtone-card button { margin-top: 8px; }
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#eef3fa;color:#183153}
+header{background:#17345c;color:white;text-align:center;padding:25px 15px}
+header h1{margin:0 0 8px}
+main{max-width:950px;margin:22px auto;padding:0 14px}
+section{background:white;padding:20px;margin-bottom:18px;border-radius:14px;box-shadow:0 3px 12px #0001}
+h2{margin-top:0}
+#clock{font-size:clamp(36px,8vw,54px);font-weight:bold;margin:15px 0}
+.muted{color:#64748b;font-size:14px}
+button,input,select,textarea{font:inherit;padding:11px;border-radius:8px;max-width:100%}
+button{border:0;background:#1761cf;color:white;cursor:pointer;margin:4px 3px 4px 0}
+button:hover{filter:brightness(.92)}
+.secondary{background:#536780}
+.danger{background:#c0392b}
+input,select,textarea{border:1px solid #cbd5e1;background:white;color:#183153}
+input,textarea,select{width:100%}
+.form-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;align-items:center}
+.form-row>*{flex:1 1 150px}
+.status{background:#eef3fa;padding:12px;border-radius:8px;margin-top:12px}
+.schedule-list{list-style:none;padding:0}
+.schedule-list li{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid #e2e8f0}
+.ringtone-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:15px}
+.ringtone-card{border:1px solid #dbe3ef;border-radius:12px;padding:14px}
+.ringtone-card h3{margin:0 0 8px}
+.ringtone-card p{color:#64748b;font-size:14px}
+.check-row{display:flex;align-items:center;gap:8px;margin:12px 0}
+.check-row input{width:auto}
+footer{text-align:center;padding:20px;color:#64748b;font-size:13px}
+@media(max-width:500px){section{padding:15px}.form-row>*{flex-basis:100%}}
+</style>
 </head>
+
 <body>
 <header>
-<h1>🔔 Digital Ghanti</h1>
-<p>School Bell Management System</p>
-<div id="clock">00:00:00</div>
-<div id="date"></div>
-<section class="card" style="margin-bottom:16px">   <h2>🎵 Ringtone Library</h2>   <input id="ringtoneSearch"     placeholder="Search ringtones..."     style="width:100%;margin-bottom:12px">    <select id="ringtoneFilter" style="width:100%;margin-bottom:12px">     <option value="all">All ringtones</option>     <option value="free">Free</option>     <option value="paid">Premium</option>   </select>    <div id="ringtoneGrid" class="ringtone-grid"></div>    <p class="muted">     Premium prices are examples in NPR. Payments are not enabled yet.   </p> </section>
+  <h1>🔔 Digital Ghanti</h1>
+  <p>Smart School Bell Management System</p>
+</header>
+
 <main>
 <section>
-<h2>Manual Bell</h2>
-<button onclick="ring()">🔔 Ring Bell Now</button>
-<button onclick="testSound()">Test Sound</button>
-<p id="status">Ready</p>
+  <h2>🕒 Current Time</h2>
+  <div id="clock">00:00:00</div>
+  <div id="date"></div>
+  <p class="muted">Time shown according to your device.</p>
 </section>
+
 <section>
-<h2>Automatic Bell</h2>
-<button onclick="toggleAuto()" id="autoBtn">Enable Automatic Bell</button>
-<p id="autoStatus">Automatic mode is OFF</p>
-<p>Keep this page open and your device awake.</p>
+  <h2>🔔 Manual Bell</h2>
+  <button id="manualBell">Ring School Bell</button>
+  <button id="testBell" class="secondary">Test Sound</button>
+  <div id="manualStatus" class="status" role="status">Bell ready.</div>
 </section>
+
 <section>
-<h2>School Timetable</h2>
-<form id="form">
-<input type="time" id="time" required>
-<input id="label" placeholder="Period / Break name" required>
-<button type="submit">Add Bell</button>
-</form>
-<ul id="list" style="list-style:none;padding:0"></ul>
+  <h2>🗣️ AI Voice Announcer</h2>
+  <p class="muted">Customize the announcement that is spoken before each scheduled bell.</p>
+
+  <label for="announcement">Announcement message</label>
+  <textarea id="announcement" rows="3" maxlength="400">Attention please! The school bell is about to ring. Please get ready.</textarea>
+
+  <div class="form-row">
+    <div>
+      <label for="voiceSelect">Voice / language</label>
+      <select id="voiceSelect">
+        <option value="">Default device voice</option>
+      </select>
+    </div>
+    <div>
+      <label for="voiceRate">Speaking speed</label>
+      <select id="voiceRate">
+        <option value="0.7">Slow</option>
+        <option value="0.9" selected>Normal</option>
+        <option value="1.1">Fast</option>
+      </select>
+    </div>
+  </div>
+
+  <label for="announceDelay">Seconds between announcement and bell</label>
+  <select id="announceDelay">
+    <option value="0">Ring immediately after announcement</option>
+    <option value="3" selected>Wait 3 seconds</option>
+    <option value="5">Wait 5 seconds</option>
+    <option value="10">Wait 10 seconds</option>
+  </select>
+
+  <div class="check-row">
+    <input type="checkbox" id="voiceEnabled" checked>
+    <label for="voiceEnabled">Speak before scheduled bells</label>
+  </div>
+
+  <div class="form-row">
+    <button id="saveVoice">Save Announcement</button>
+    <button id="previewVoice" class="secondary">▶ Preview Voice</button>
+    <button id="stopVoice" class="danger">Stop Voice</button>
+  </div>
+
+  <div id="voiceStatus" class="status" role="status">
+    Edit your message and preview it.
+  </div>
+  <p class="muted">Voice uses your browser's built-in speech synthesis. Available voices depend on your device. This is a configurable voice announcer, not a connected AI service.</p>
+</section>
+
+<section>
+  <h2>⏰ Automatic Bell</h2>
+  <p class="muted">Keep this page open and your device awake. Allow sound after interacting with the page.</p>
+  <button id="autoButton">Enable Automatic Bell</button>
+  <div id="autoStatus" class="status" role="status">Automatic bell is OFF.</div>
+</section>
+
+<section>
+  <h2>📅 School Timetable</h2>
+  <form id="scheduleForm">
+    <div class="form-row">
+      <input id="bellTime" type="time" required aria-label="Bell time">
+      <input id="bellLabel" type="text" maxlength="60" placeholder="Bell name" required>
+      <button type="submit">Add Bell</button>
+    </div>
+  </form>
+  <button id="resetSchedule" class="secondary">Restore Example Timetable</button>
+  <ul id="scheduleList" class="schedule-list"></ul>
+  <div id="scheduleStatus" class="muted" role="status"></div>
+</section>
+
+<section>
+  <h2>🎵 Free Ringtone Library</h2>
+  <p>All previews are free. No payments or subscriptions.</p>
+  <div class="form-row">
+    <input id="ringtoneSearch" type="search" placeholder="Search sounds..." aria-label="Search sounds">
+    <select id="categoryFilter" aria-label="Filter sounds">
+      <option value="all">All categories</option>
+      <option value="School">School</option>
+      <option value="Alarm">Alarm</option>
+      <option value="Digital">Digital</option>
+      <option value="Nature">Nature</option>
+      <option value="Fun">Fun</option>
+      <option value="Music">Music-style</option>
+      <option value="Gaming">Gaming</option>
+    </select>
+  </div>
+  <div id="ringtoneGrid" class="ringtone-grid"></div>
+  <p class="muted">These are generated electronic sound previews, not recordings of copyrighted songs.</p>
 </section>
 </main>
+
+<footer>Digital Ghanti · Free School Bell System</footer>
+
 <script>
-let schedule=[];
-let enabled=false;
-let audio;
-try{schedule=JSON.parse(localStorage.getItem("ghantiSchedule")||"[]")}catch(e){}
-const $=id=>document.getElementById(id);
-function draw(){
-$("list").innerHTML="";
-schedule.sort((a,b)=>a.time.localeCompare(b.time)).forEach((s,i)=>{
-let li=document.createElement("li");
-li.append(document.createTextNode(s.time+" — "+s.name+" "));
-let b=document.createElement("button");
-b.textContent="Remove";
-b.onclick=()=>{schedule.splice(i,1);save();draw()};
-li.append(b);$("list").append(li);
+"use strict";
+
+const $ = id => document.getElementById(id);
+
+let audioContext = null;
+let autoEnabled = false;
+let lastBellKey = "";
+let schedule = [];
+let voices = [];
+
+const defaultSchedule = [
+  {time:"09:00",name:"School Starts"},
+  {time:"09:45",name:"First Period"},
+  {time:"10:30",name:"Second Period"},
+  {time:"11:15",name:"Break Time"},
+  {time:"11:30",name:"Classes Resume"},
+  {time:"13:00",name:"Lunch Break"},
+  {time:"13:30",name:"Afternoon Classes"},
+  {time:"15:00",name:"School Ends"}
+];
+
+const ringtoneOptions = [
+  {name:"Classic School Bell",category:"School",freq:880,type:"square"},
+  {name:"Morning Alarm",category:"Alarm",freq:660,type:"sine"},
+  {name:"Digital Beep",category:"Digital",freq:1200,type:"sine"},
+  {name:"Notification Ping",category:"Digital",freq:1500,type:"sine"},
+  {name:"Funny Bounce",category:"Fun",freq:400,type:"triangle"},
+  {name:"Bird Chirp",category:"Nature",freq:1800,type:"sine"},
+  {name:"Calm Chime",category:"Music",freq:523,type:"sine"},
+  {name:"Gaming Alert",category:"Gaming",freq:1000,type:"square"},
+  {name:"Epic Alarm",category:"Alarm",freq:750,type:"sawtooth"},
+  {name:"Festival Tone",category:"Music",freq:600,type:"triangle"},
+  {name:"Pop Tone",category:"Music",freq:900,type:"sine"},
+  {name:"Rainy Mood",category:"Nature",freq:700,type:"sine"},
+  {name:"Robot Beep",category:"Gaming",freq:350,type:"square"},
+  {name:"Double Bell",category:"School",freq:1100,type:"square"},
+  {name:"Wake Up Chime",category:"Alarm",freq:800,type:"sine"},
+  {name:"Quick Message",category:"Digital",freq:1300,type:"triangle"},
+  {name:"Bright Melody",category:"Music",freq:980,type:"sine"}
+];
+
+function getAudio() {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) throw new Error("Web Audio is not supported by this browser.");
+  if (!audioContext) audioContext = new AC();
+  return audioContext;
+}
+
+async function playTone(freq, type, duration=0.25, startAt=0) {
+  const ctx = getAudio();
+  if (ctx.state === "suspended") await ctx.resume();
+
+  const start = ctx.currentTime + startAt;
+  const oscillator = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  oscillator.type = type || "sine";
+  oscillator.frequency.setValueAtTime(freq, start);
+  gain.gain.setValueAtTime(0.0001, start);
+  gain.gain.exponentialRampToValueAtTime(0.18, start + 0.02);
+  gain.gain.setValueAtTime(0.18, start + duration * 0.65);
+  gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+
+  oscillator.connect(gain);
+  gain.connect(ctx.destination);
+  oscillator.start(start);
+  oscillator.stop(start + duration);
+}
+
+async function ringBell() {
+  const ctx = getAudio();
+  if (ctx.state === "suspended") await ctx.resume();
+
+  for (let i=0; i<3; i++) {
+    await playTone(880, "square", 0.45, i * 0.65);
+  }
+}
+
+function speak(text) {
+  return new Promise(resolve => {
+    if (!("speechSynthesis" in window)) {
+      $("voiceStatus").textContent = "Speech synthesis is not supported by this browser.";
+      resolve(false);
+      return;
+    }
+
+    const message = text.trim();
+    if (!message) {
+      $("voiceStatus").textContent = "Please enter an announcement first.";
+      resolve(false);
+      return;
+    }
+
+    speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(message);
+    const chosenVoice = $("voiceSelect").value;
+    const voice = voices.find(v => v.name === chosenVoice);
+    if (voice) utterance.voice = voice;
+
+    utterance.rate = Number($("voiceRate").value);
+    utterance.onstart = () => {
+      $("voiceStatus").textContent = "Speaking announcement...";
+    };
+    utterance.onend = () => {
+      $("voiceStatus").textContent = "Announcement finished.";
+      resolve(true);
+    };
+    utterance.onerror = () => {
+      $("voiceStatus").textContent = "Could not play the voice. Try another voice.";
+      resolve(false);
+    };
+
+    speechSynthesis.speak(utterance);
+  });
+}
+
+async function announceThenRing() {
+  if ($("voiceEnabled").checked && $("announcement").value.trim()) {
+    await speak($("announcement").value);
+    const delay = Number($("announceDelay").value);
+    if (delay) {
+      await new Promise(resolve => setTimeout(resolve, delay * 1000));
+    }
+  }
+
+  await ringBell();
+}
+
+function updateClock() {
+  const now = new Date();
+  $("clock").textContent = now.toLocaleTimeString();
+  $("date").textContent = now.toLocaleDateString(undefined, {
+    weekday:"long",year:"numeric",month:"long",day:"numeric"
+  });
+
+  if (autoEnabled) {
+    const time = now.toTimeString().slice(0,5);
+    const key = now.toDateString() + " " + time;
+
+    if (now.getSeconds() === 0 && key !== lastBellKey) {
+      const item = schedule.find(entry => entry.time === time);
+      if (item) {
+        lastBellKey = key;
+        $("autoStatus").textContent = "Upcoming bell: " + item.name;
+        announceThenRing().catch(err => {
+          $("autoStatus").textContent = "Bell error: " + err.message;
+        });
+      }
+    }
+  }
+}
+
+function saveSchedule() {
+  localStorage.setItem("dgSchedule", JSON.stringify(schedule));
+}
+
+function drawSchedule() {
+  const list = $("scheduleList");
+  list.replaceChildren();
+
+  schedule.sort((a,b) => a.time.localeCompare(b.time));
+
+  schedule.forEach((entry,index) => {
+    const li = document.createElement("li");
+    const label = document.createElement("span");
+    label.textContent = entry.time + " — " + entry.name;
+
+    const remove = document.createElement("button");
+    remove.textContent = "Remove";
+    remove.className = "danger";
+    remove.type = "button";
+    remove.addEventListener("click", () => {
+      schedule.splice(index,1);
+      saveSchedule();
+      drawSchedule();
+      $("scheduleStatus").textContent = "Timetable updated.";
+    });
+
+    li.append(label,remove);
+    list.append(li);
+  });
+}
+
+function loadVoices() {
+  if (!("speechSynthesis" in window)) {
+    $("voiceStatus").textContent = "Voice announcements are not supported in this browser.";
+    return;
+  }
+
+  voices = speechSynthesis.getVoices();
+  const select = $("voiceSelect");
+  const previous = select.value;
+  select.replaceChildren();
+
+  const defaultOption = document.createElement("option");
+  defaultOption.value = "";
+  defaultOption.textContent = "Default device voice";
+  select.append(defaultOption);
+
+  voices.forEach(voice => {
+    const option = document.createElement("option");
+    option.value = voice.name;
+    option.textContent = voice.name + " (" + voice.lang + ")";
+    select.append(option);
+  });
+
+  if (voices.some(v => v.name === previous)) select.value = previous;
+}
+
+function saveVoiceSettings() {
+  const settings = {
+    announcement: $("announcement").value,
+    voice: $("voiceSelect").value,
+    rate: $("voiceRate").value,
+    delay: $("announceDelay").value,
+    enabled: $("voiceEnabled").checked
+  };
+  localStorage.setItem("dgVoiceSettings", JSON.stringify(settings));
+  $("voiceStatus").textContent = "Announcement settings saved on this device.";
+}
+
+function loadVoiceSettings() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("dgVoiceSettings") || "null");
+    if (!saved) return;
+    $("announcement").value = saved.announcement ?? $("announcement").value;
+    $("voiceRate").value = saved.rate ?? "0.9";
+    $("announceDelay").value = saved.delay ?? "3";
+    $("voiceEnabled").checked = saved.enabled ?? true;
+    window.savedVoiceName = saved.voice || "";
+  } catch (error) {
+    console.warn("Voice settings could not be loaded.", error);
+  }
+}
+
+function renderRingtones() {
+  const grid = $("ringtoneGrid");
+  grid.replaceChildren();
+
+  const search = $("ringtoneSearch").value.trim().toLowerCase();
+  const category = $("categoryFilter").value;
+
+  ringtoneOptions
+    .filter(item => item.name.toLowerCase().includes(search))
+    .filter(item => category === "all" || item.category === category)
+    .forEach(item => {
+      const card = document.createElement("div");
+      card.className = "ringtone-card";
+
+      const title = document.createElement("h3");
+      title.textContent = item.name;
+
+      const info = document.createElement("p");
+      info.textContent = item.category + " · Free preview";
+
+      const button = document.createElement("button");
+      button.textContent = "▶ Preview";
+      button.addEventListener("click", async () => {
+        try {
+          await playTone(item.freq,item.type,0.35);
+          await playTone(item.freq * 1.25,item.type,0.35,0.4);
+        } catch (error) {
+          alert(error.message);
+        }
+      });
+
+      card.append(title,info,button);
+      grid.append(card);
+    });
+}
+
+$("manualBell").addEventListener("click", async () => {
+  try {
+    await ringBell();
+    $("manualStatus").textContent = "School bell played.";
+  } catch (error) {
+    $("manualStatus").textContent = error.message;
+  }
 });
-}
-function save(){try{localStorage.setItem("ghantiSchedule",JSON.stringify(schedule))}catch(e){}}
-function ring(){
-try{
-let A=window.AudioContext||window.webkitAudioContext;
-if(!A){$("status").textContent="Audio is not supported";return}
-if(!audio)audio=new A();
-if(audio.state==="suspended")audio.resume();
-let start=audio.currentTime;
-[0,.35,.7,1.05].forEach((d,i)=>{
-[880,1175,1568].forEach((f,j)=>{
-let o=audio.createOscillator(),g=audio.createGain();
-o.type="sine";o.frequency.value=f;
-g.gain.setValueAtTime(.0001,start+d);
-g.gain.exponentialRampToValueAtTime(.08/(j+1),start+d+.02);
-g.gain.exponentialRampToValueAtTime(.0001,start+d+.5);
-o.connect(g);g.connect(audio.destination);
-o.start(start+d);o.stop(start+d+.55);
+
+$("testBell").addEventListener("click", async () => {
+  try {
+    await playTone(880,"sine",0.3);
+    $("manualStatus").textContent = "Test sound played.";
+  } catch (error) {
+    $("manualStatus").textContent = error.message;
+  }
 });
+
+$("previewVoice").addEventListener("click", () => {
+  speak($("announcement").value);
 });
-$("status").textContent="Bell rang!";
-}catch(e){$("status").textContent="Click Test Sound and check volume."}
+
+$("stopVoice").addEventListener("click", () => {
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  $("voiceStatus").textContent = "Voice stopped.";
+});
+
+$("saveVoice").addEventListener("click", saveVoiceSettings);
+
+$("autoButton").addEventListener("click", () => {
+  autoEnabled = !autoEnabled;
+  $("autoButton").textContent = autoEnabled
+    ? "Disable Automatic Bell" : "Enable Automatic Bell";
+  $("autoStatus").textContent = autoEnabled
+    ? "Automatic bell is ON. Keep this page open." : "Automatic bell is OFF.";
+});
+
+$("scheduleForm").addEventListener("submit", event => {
+  event.preventDefault();
+  const time = $("bellTime").value;
+  const name = $("bellLabel").value.trim();
+
+  if (!time || !name) return;
+  schedule.push({time,name});
+  saveSchedule();
+  drawSchedule();
+  $("scheduleForm").reset();
+  $("scheduleStatus").textContent = "Bell added to timetable.";
+});
+
+$("resetSchedule").addEventListener("click", () => {
+  schedule = defaultSchedule.map(item => ({...item}));
+  saveSchedule();
+  drawSchedule();
+  $("scheduleStatus").textContent = "Example timetable restored.";
+});
+
+$("ringtoneSearch").addEventListener("input",renderRingtones);
+$("categoryFilter").addEventListener("change",renderRingtones);
+
+try {
+  const savedSchedule = JSON.parse(localStorage.getItem("dgSchedule") || "null");
+  schedule = Array.isArray(savedSchedule) ? savedSchedule : defaultSchedule.map(item => ({...item}));
+} catch (error) {
+  schedule = defaultSchedule.map(item => ({...item}));
 }
-function testSound(){ring()}
-$("form").onsubmit=e=>{
-e.preventDefault();
-schedule.push({time:$("time").value,name:$("label").value.trim()});
-save();draw();$("label").value="";
-};
-function toggleAuto(){
-enabled=!enabled;
-$("autoBtn").textContent=enabled?"Disable Automatic Bell":"Enable Automatic Bell";
-$("autoStatus").textContent=enabled?"Automatic mode is ON":"Automatic mode is OFF";
-if(enabled)ring();
+
+loadVoiceSettings();
+loadVoices();
+
+if ("speechSynthesis" in window) {
+  speechSynthesis.onvoiceschanged = () => {
+    const oldVoice = window.savedVoiceName || "";
+    loadVoices();
+    if (oldVoice && voices.some(v => v.name === oldVoice)) {
+      $("voiceSelect").value = oldVoice;
+    }
+  };
 }
-let lastBell="";
-function tick(){
-let d=new Date(),hh=String(d.getHours()).padStart(2,"0"),mm=String(d.getMinutes()).padStart(2,"0");
-$("clock").textContent=d.toLocaleTimeString();
-$("date").textContent=d.toLocaleDateString();
-if(enabled){
-let key=d.toDateString()+" "+hh+":"+mm;
-if(d.getSeconds()<2&&key!==lastBell){
-let s=schedule.find(x=>x.time===hh+":"+mm);
-if(s){lastBell=key;ring();$("status").textContent="Automatic bell: "+s.name}
-}
-}
-}
-draw();tick();setInterval(tick,500);
+
+drawSchedule();
+renderRingtones();
+updateClock();
+setInterval(updateClock,250);
+
 </script>
 </body>
 </html>
