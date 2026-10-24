@@ -16,7 +16,7 @@ button{padding:12px 18px;margin:5px;border:0;border-radius:8px;background:#1761c
 input{padding:10px;margin:5px;border:1px solid #bbb;border-radius:6px}
 li{padding:10px;text-align:left;border-bottom:1px solid #ddd}
 li button{float:right;padding:5px 9px}
-</style>
+.ringtone-grid {   display: grid;   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));   gap: 12px; } .ringtone-card {   background: white;   border: 1px solid #dbe3ef;   border-radius: 12px;   padding: 15px; } .ringtone-card h3 { margin-top: 0; } .ringtone-card p { color: #64748b; } .ringtone-card button { margin-top: 8px; }
 </head>
 <body>
 <header>
@@ -24,7 +24,7 @@ li button{float:right;padding:5px 9px}
 <p>School Bell Management System</p>
 <div id="clock">00:00:00</div>
 <div id="date"></div>
-</header>
+<section class="card" style="margin-bottom:16px">   <h2>🎵 Ringtone Library</h2>   <input id="ringtoneSearch"     placeholder="Search ringtones..."     style="width:100%;margin-bottom:12px">    <select id="ringtoneFilter" style="width:100%;margin-bottom:12px">     <option value="all">All ringtones</option>     <option value="free">Free</option>     <option value="paid">Premium</option>   </select>    <div id="ringtoneGrid" class="ringtone-grid"></div>    <p class="muted">     Premium prices are examples in NPR. Payments are not enabled yet.   </p> </section>
 <main>
 <section>
 <h2>Manual Bell</h2>
