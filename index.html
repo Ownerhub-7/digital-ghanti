@@ -3,515 +3,790 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Digital Ghanti - Smart School Bell</title>
-<meta name="theme-color" content="#17345c">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101827">
+<title>Digital Ghanti | School Bell System</title>
 <style>
+:root {
+  --bg:#0b1220; --panel:#141e30; --panel2:#1a2740;
+  --text:#edf3ff; --muted:#9cabc4; --line:#2b3952;
+  --blue:#6595ff; --green:#45d6a0; --red:#ff647c;
+  --yellow:#ffcb70;
+}
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#eef3fa;color:#183153}
-header{background:#17345c;color:white;text-align:center;padding:25px 15px}
-header h1{margin:0 0 8px}
-main{max-width:950px;margin:22px auto;padding:0 14px}
-section{background:white;padding:20px;margin-bottom:18px;border-radius:14px;box-shadow:0 3px 12px #0001}
-h2{margin-top:0}
-#clock{font-size:clamp(36px,8vw,54px);font-weight:bold;margin:15px 0}
-.muted{color:#64748b;font-size:14px}
-button,input,select,textarea{font:inherit;padding:11px;border-radius:8px;max-width:100%}
-button{border:0;background:#1761cf;color:white;cursor:pointer;margin:4px 3px 4px 0}
-button:hover{filter:brightness(.92)}
-.secondary{background:#536780}
-.danger{background:#c0392b}
-input,select,textarea{border:1px solid #cbd5e1;background:white;color:#183153}
-input,textarea,select{width:100%}
-.form-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;align-items:center}
-.form-row>*{flex:1 1 150px}
-.status{background:#eef3fa;padding:12px;border-radius:8px;margin-top:12px}
-.schedule-list{list-style:none;padding:0}
-.schedule-list li{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid #e2e8f0}
-.ringtone-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:15px}
-.ringtone-card{border:1px solid #dbe3ef;border-radius:12px;padding:14px}
-.ringtone-card h3{margin:0 0 8px}
-.ringtone-card p{color:#64748b;font-size:14px}
-.check-row{display:flex;align-items:center;gap:8px;margin:12px 0}
-.check-row input{width:auto}
-footer{text-align:center;padding:20px;color:#64748b;font-size:13px}
-@media(max-width:500px){section{padding:15px}.form-row>*{flex-basis:100%}}
+body{margin:0;background:var(--bg);color:var(--text);
+font-family:Arial,Helvetica,sans-serif;line-height:1.5}
+header{padding:22px 5%;background:#101827;border-bottom:1px solid var(--line)}
+.header-row{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.brand{font-size:25px;font-weight:800}
+.brand span{color:var(--blue)}
+.small{font-size:13px;color:var(--muted)}
+.status{padding:7px 12px;border-radius:20px;background:#203e37;color:var(--green);font-size:12px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+nav a{color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:9px;background:var(--panel)}
+nav a:hover{color:white;background:var(--panel2)}
+main{max-width:1250px;margin:auto;padding:22px 18px 50px}
+h1,h2,h3,p{margin-top:0}
+h2{font-size:19px;margin-bottom:15px}
+h3{font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+.card{grid-column:span 6;background:var(--panel);border:1px solid var(--line);
+border-radius:16px;padding:20px;min-width:0}
+.full{grid-column:span 12}
+.third{grid-column:span 4}
+.hero{grid-column:span 12;display:grid;grid-template-columns:1.2fr 1fr;gap:20px;
+background:linear-gradient(130deg,#192b49,#142035);border:1px solid var(--line);
+padding:25px;border-radius:18px}
+.clock{font-size:clamp(34px,6vw,57px);font-weight:800;letter-spacing:1px}
+.date{color:var(--muted)}
+.metric{font-size:28px;font-weight:800}
+.metric-label{font-size:12px;color:var(--muted)}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.metric-box{padding:14px;background:#101827;border-radius:12px}
+input,select,textarea{width:100%;background:#0e1727;border:1px solid var(--line);
+color:var(--text);padding:11px;border-radius:9px;font:inherit;min-width:0}
+textarea{resize:vertical;min-height:85px}
+label{display:block;color:var(--muted);font-size:13px;margin:10px 0 5px}
+button{background:var(--blue);color:#071020;border:0;padding:10px 14px;
+border-radius:9px;font-weight:700;cursor:pointer;font-size:13px}
+button:hover{filter:brightness(1.1)}
+button.secondary{background:#293852;color:var(--text)}
+button.success{background:var(--green);color:#09261c}
+button.danger{background:var(--red);color:#330914}
+button.warning{background:var(--yellow);color:#382600}
+button:disabled{opacity:.5;cursor:not-allowed}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.check{display:flex;gap:9px;align-items:center;margin:12px 0;color:var(--text)}
+.check input{width:auto}
+.notice{padding:12px;border-radius:10px;background:#10283a;color:#b9dcff;
+font-size:13px;margin:12px 0}
+.warning-box{background:#33271b;color:#ffe0a3;padding:12px;border-radius:10px;
+font-size:13px;margin:12px 0}
+.item{display:flex;justify-content:space-between;align-items:center;gap:12px;
+padding:12px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item-main{min-width:0;overflow-wrap:anywhere}
+.tag{font-size:11px;background:#263650;color:#c6d7f7;padding:4px 8px;
+border-radius:20px;display:inline-block}
+.tag.green{background:#163d32;color:#7df1c3}
+.tag.red{background:#47232e;color:#ffb6c3}
+.item-buttons{display:flex;gap:6px;flex-wrap:wrap}
+.item-buttons button{padding:7px 9px}
+.tone-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tone{border:1px solid var(--line);padding:12px;border-radius:12px;background:#101827}
+.tone strong{display:block;margin-bottom:8px}
+hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+footer{text-align:center;color:var(--muted);padding:20px;font-size:12px}
+.empty{color:var(--muted);padding:15px 0}
+audio{width:100%;margin-top:10px}
+@media(max-width:760px){
+ .card,.third{grid-column:span 12}
+ .hero{grid-template-columns:1fr}
+ .metrics{grid-template-columns:repeat(3,1fr)}
+ .row{grid-template-columns:1fr}
+ main{padding:14px 12px 35px}
+ header{padding:18px 14px}
+}
+@media(max-width:380px){
+ .metrics{grid-template-columns:1fr}
+ .item{align-items:flex-start;flex-direction:column}
+}
 </style>
 </head>
-
 <body>
 <header>
-  <h1>🔔 Digital Ghanti</h1>
-  <p>Smart School Bell Management System</p>
+  <div class="header-row">
+    <div>
+      <div class="brand">🔔 Digital <span>Ghanti</span></div>
+      <div class="small">School Bell & Announcement Management</div>
+    </div>
+    <div class="status" id="systemStatus">● System ready</div>
+  </div>
+  <nav>
+    <a href="#dashboard">Dashboard</a>
+    <a href="#schedule">Schedule</a>
+    <a href="#announcements">Announcements</a>
+    <a href="#emergency">Emergency</a>
+    <a href="#zones">Zones</a>
+    <a href="#sounds">Sound Library</a>
+    <a href="#reports">Reports</a>
+  </nav>
 </header>
 
 <main>
-<section>
-  <h2>🕒 Current Time</h2>
-  <div id="clock">00:00:00</div>
-  <div id="date"></div>
-  <p class="muted">Time shown according to your device.</p>
-</section>
+<div class="grid">
 
-<section>
-  <h2>🔔 Manual Bell</h2>
-  <button id="manualBell">Ring School Bell</button>
-  <button id="testBell" class="secondary">Test Sound</button>
-  <div id="manualStatus" class="status" role="status">Bell ready.</div>
-</section>
-
-<section>
-  <h2>🗣️ AI Voice Announcer</h2>
-  <p class="muted">Customize the announcement that is spoken before each scheduled bell.</p>
-
-  <label for="announcement">Announcement message</label>
-  <textarea id="announcement" rows="3" maxlength="400">Attention please! The school bell is about to ring. Please get ready.</textarea>
-
-  <div class="form-row">
-    <div>
-      <label for="voiceSelect">Voice / language</label>
-      <select id="voiceSelect">
-        <option value="">Default device voice</option>
-      </select>
-    </div>
-    <div>
-      <label for="voiceRate">Speaking speed</label>
-      <select id="voiceRate">
-        <option value="0.7">Slow</option>
-        <option value="0.9" selected>Normal</option>
-        <option value="1.1">Fast</option>
-      </select>
+<section class="hero" id="dashboard">
+  <div>
+    <div class="small">CURRENT LOCAL TIME</div>
+    <div class="clock" id="clock">--:--:--</div>
+    <div class="date" id="date">Loading date...</div>
+    <div class="metrics">
+      <div class="metric-box"><div class="metric" id="todayCount">0</div><div class="metric-label">Today's bells</div></div>
+      <div class="metric-box"><div class="metric" id="scheduleCount">0</div><div class="metric-label">Scheduled items</div></div>
+      <div class="metric-box"><div class="metric" id="logCount">0</div><div class="metric-label">Saved logs</div></div>
     </div>
   </div>
-
-  <label for="announceDelay">Seconds between announcement and bell</label>
-  <select id="announceDelay">
-    <option value="0">Ring immediately after announcement</option>
-    <option value="3" selected>Wait 3 seconds</option>
-    <option value="5">Wait 5 seconds</option>
-    <option value="10">Wait 10 seconds</option>
-  </select>
-
-  <div class="check-row">
-    <input type="checkbox" id="voiceEnabled" checked>
-    <label for="voiceEnabled">Speak before scheduled bells</label>
+  <div>
+    <h2>Quick Bell Control</h2>
+    <label for="quickDuration">Bell duration (seconds)</label>
+    <input id="quickDuration" type="number" min="0.5" max="120" step="0.5" value="3">
+    <label for="quickTone">Bell sound</label>
+    <select id="quickTone">
+      <option value="classic">Classic Bell</option>
+      <option value="chime">School Chime</option>
+      <option value="double">Double Bell</option>
+      <option value="soft">Soft Bell</option>
+      <option value="alarm">Alarm Tone</option>
+      <option value="melody">Melodic Chime</option>
+    </select>
+    <div class="actions">
+      <button id="ringNow" class="success">🔔 Ring Now</button>
+      <button id="stopAudio" class="secondary">■ Stop Audio</button>
+    </div>
+    <p class="small" style="margin-top:12px">Keep this page open and your device awake for automatic bells.</p>
   </div>
-
-  <div class="form-row">
-    <button id="saveVoice">Save Announcement</button>
-    <button id="previewVoice" class="secondary">▶ Preview Voice</button>
-    <button id="stopVoice" class="danger">Stop Voice</button>
-  </div>
-
-  <div id="voiceStatus" class="status" role="status">
-    Edit your message and preview it.
-  </div>
-  <p class="muted">Voice uses your browser's built-in speech synthesis. Available voices depend on your device. This is a configurable voice announcer, not a connected AI service.</p>
 </section>
 
-<section>
-  <h2>⏰ Automatic Bell</h2>
-  <p class="muted">Keep this page open and your device awake. Allow sound after interacting with the page.</p>
-  <button id="autoButton">Enable Automatic Bell</button>
-  <div id="autoStatus" class="status" role="status">Automatic bell is OFF.</div>
-</section>
-
-<section>
-  <h2>📅 School Timetable</h2>
+<section class="card full" id="schedule">
+  <h2>🗓️ Automatic Bell Schedule</h2>
+  <p class="small">Create, edit and remove bell times. Each bell can have its own duration, sound, announcement and days.</p>
   <form id="scheduleForm">
-    <div class="form-row">
-      <input id="bellTime" type="time" required aria-label="Bell time">
-      <input id="bellLabel" type="text" maxlength="60" placeholder="Bell name" required>
-      <button type="submit">Add Bell</button>
+    <input id="editId" type="hidden">
+    <div class="row">
+      <div><label for="bellTime">Bell time</label><input id="bellTime" type="time" required></div>
+      <div><label for="bellName">Period / event name</label><input id="bellName" placeholder="e.g. First Period" required maxlength="80"></div>
+    </div>
+    <div class="row">
+      <div><label for="bellDays">Repeat</label>
+        <select id="bellDays">
+          <option value="everyday">Every day</option>
+          <option value="weekdays">Weekdays (Mon–Fri)</option>
+          <option value="weekend">Weekend (Sat–Sun)</option>
+          <option value="mon">Monday</option><option value="tue">Tuesday</option>
+          <option value="wed">Wednesday</option><option value="thu">Thursday</option>
+          <option value="fri">Friday</option><option value="sat">Saturday</option>
+          <option value="sun">Sunday</option>
+        </select>
+      </div>
+      <div><label for="bellLength">Duration (seconds)</label><input id="bellLength" type="number" min="0.5" max="120" step="0.5" value="3" required></div>
+    </div>
+    <div class="row">
+      <div><label for="bellTone">Sound</label>
+        <select id="bellTone">
+          <option value="classic">Classic Bell</option><option value="chime">School Chime</option>
+          <option value="double">Double Bell</option><option value="soft">Soft Bell</option>
+          <option value="alarm">Alarm Tone</option><option value="melody">Melodic Chime</option>
+        </select>
+      </div>
+      <div><label for="bellZone">Zone</label>
+        <select id="bellZone"><option>Whole School</option><option>Primary Block</option><option>Secondary Block</option><option>Office</option><option>Assembly Hall</option></select>
+      </div>
+    </div>
+    <label for="bellAnnouncement">Announcement before this bell (optional)</label>
+    <input id="bellAnnouncement" placeholder="e.g. Students, please proceed to your next class." maxlength="300">
+    <label class="check"><input id="bellVoice" type="checkbox" checked> Speak announcement before ringing</label>
+    <div class="actions">
+      <button type="submit" id="saveBell">＋ Add to Schedule</button>
+      <button type="button" class="secondary" id="cancelEdit" hidden>Cancel Edit</button>
+      <button type="button" class="secondary" id="restoreSchedule">Restore Example Schedule</button>
     </div>
   </form>
-  <button id="resetSchedule" class="secondary">Restore Example Timetable</button>
-  <ul id="scheduleList" class="schedule-list"></ul>
-  <div id="scheduleStatus" class="muted" role="status"></div>
+  <hr>
+  <div class="row">
+    <div><label for="holidayDates">Holiday dates (one per line, YYYY-MM-DD)</label>
+      <textarea id="holidayDates" placeholder="2026-12-25&#10;2027-01-01"></textarea>
+    </div>
+    <div>
+      <label class="check"><input type="checkbox" id="skipHolidays" checked> Skip automatic bells on holiday dates</label>
+      <label class="check"><input type="checkbox" id="examMode"> Exam mode: use exam schedule only</label>
+      <p class="small">When exam mode is on, only entries marked “Exam” in their name ring automatically.</p>
+      <button id="saveCalendar" class="secondary" type="button">Save Calendar Settings</button>
+    </div>
+  </div>
+  <hr>
+  <h3>Upcoming / Saved Bells</h3>
+  <div id="scheduleList"></div>
 </section>
 
-<section>
-  <h2>🎵 Free Ringtone Library</h2>
-  <p>All previews are free. No payments or subscriptions.</p>
-  <div class="form-row">
-    <input id="ringtoneSearch" type="search" placeholder="Search sounds..." aria-label="Search sounds">
-    <select id="categoryFilter" aria-label="Filter sounds">
-      <option value="all">All categories</option>
-      <option value="School">School</option>
-      <option value="Alarm">Alarm</option>
-      <option value="Digital">Digital</option>
-      <option value="Nature">Nature</option>
-      <option value="Fun">Fun</option>
-      <option value="Music">Music-style</option>
-      <option value="Gaming">Gaming</option>
-    </select>
+<section class="card" id="announcements">
+  <h2>🗣️ Virtual Announcements</h2>
+  <label for="announcementText">Announcement text</label>
+  <textarea id="announcementText" placeholder="Good morning students and teachers. Please prepare for the next period.">Good morning students and teachers. Please prepare for the next period.</textarea>
+  <div class="row">
+    <div><label for="voiceSelect">Voice</label><select id="voiceSelect"><option value="">Default device voice</option></select></div>
+    <div><label for="voiceRate">Speaking speed</label><input id="voiceRate" type="range" min="0.6" max="1.5" step="0.1" value="1"></div>
   </div>
-  <div id="ringtoneGrid" class="ringtone-grid"></div>
-  <p class="muted">These are generated electronic sound previews, not recordings of copyrighted songs.</p>
+  <label for="voiceDelay">Delay before bell (seconds)</label>
+  <select id="voiceDelay"><option value="0">No delay</option><option value="2" selected>2 seconds</option><option value="5">5 seconds</option><option value="10">10 seconds</option></select>
+  <div class="actions">
+    <button id="previewVoice">▶ Preview Voice</button>
+    <button id="stopVoice" class="secondary">Stop Voice</button>
+    <button id="saveVoice" class="secondary">Save Voice Settings</button>
+  </div>
+  <hr>
+  <h3>🎙️ Microphone Announcement</h3>
+  <p class="small">Record a spoken announcement, then play it through this device. This does not stream live to other classrooms.</p>
+  <div class="actions">
+    <button id="startMic" class="secondary">● Start Recording</button>
+    <button id="stopMic" class="danger" disabled>Stop Recording</button>
+  </div>
+  <div id="micStatus" class="small" aria-live="polite">Microphone not recording.</div>
+  <audio id="micPlayback" controls hidden></audio>
 </section>
+
+<section class="card" id="emergency">
+  <h2>🚨 Emergency Alarm</h2>
+  <div class="warning-box">Use only for genuine emergencies or authorized drills. This alarm sounds on this device only.</div>
+  <label for="emergencyMessage">Emergency announcement</label>
+  <textarea id="emergencyMessage">Attention everyone. Please follow the school's emergency instructions and remain calm.</textarea>
+  <label for="emergencyDuration">Alarm duration (seconds)</label>
+  <input id="emergencyDuration" type="number" min="1" max="120" value="15">
+  <div class="actions">
+    <button id="emergencyStart" class="danger">🚨 Start Emergency Alarm</button>
+    <button id="emergencyStop" class="secondary">Stop Emergency</button>
+  </div>
+  <p class="small">Emergency audio interrupts ordinary audio on this page. It cannot override audio on other devices without a connected broadcast server.</p>
+</section>
+
+<section class="card" id="zones">
+  <h2>🏫 Zone Broadcast</h2>
+  <p class="small">Choose a school zone to label an announcement or scheduled bell. Without networked speakers or a server, audio plays only on this device.</p>
+  <label for="zoneSelect">Selected zone</label>
+  <select id="zoneSelect">
+    <option>Whole School</option><option>Primary Block</option>
+    <option>Secondary Block</option><option>Office</option><option>Assembly Hall</option>
+  </select>
+  <label for="zoneMessage">Message for selected zone</label>
+  <textarea id="zoneMessage" placeholder="Enter the announcement for this zone..."></textarea>
+  <div class="actions">
+    <button id="zoneSpeak">Speak on This Device</button>
+    <button id="zoneRing" class="secondary">Ring Selected Zone</button>
+  </div>
+  <div class="notice" id="zoneNotice">Selected zone: Whole School</div>
+</section>
+
+<section class="card" id="sounds">
+  <h2>🎵 Sound Library</h2>
+  <p class="small">Preview the built-in tones. Choose a tone in Quick Bell Control or in each scheduled bell.</p>
+  <div class="tone-grid" id="toneGrid"></div>
+</section>
+
+<section class="card full" id="reports">
+  <h2>📊 Reports & Logs</h2>
+  <div class="row">
+    <div><label for="logFilter">Filter logs</label>
+      <select id="logFilter"><option value="all">All events</option><option value="bell">Bells</option><option value="voice">Announcements</option><option value="emergency">Emergency</option><option value="error">Errors</option></select>
+    </div>
+    <div><label for="logSearch">Search logs</label><input id="logSearch" placeholder="Search names, zones, messages..."></div>
+  </div>
+  <div class="actions">
+    <button id="exportLogs">Export CSV Report</button>
+    <button id="clearLogs" class="danger">Clear Logs</button>
+  </div>
+  <div id="logList"></div>
+</section>
+
+<section class="card full">
+  <h2>⚙️ System Settings</h2>
+  <div class="row">
+    <div>
+      <label for="schoolName">School name</label>
+      <input id="schoolName" placeholder="Your school name">
+      <label for="volume">Bell volume</label>
+      <input id="volume" type="range" min="0.05" max="1" step="0.05" value="0.5">
+      <label class="check"><input type="checkbox" id="autoEnabled"> Enable automatic schedule</label>
+      <label class="check"><input type="checkbox" id="announceScheduled" checked> Allow scheduled voice announcements</label>
+      <button id="saveSettings">Save System Settings</button>
+    </div>
+    <div>
+      <div class="notice">Settings and logs are saved in this browser on this device.</div>
+      <div class="warning-box">Automatic bells require this page to stay open, audio to be allowed, and the device to remain awake. Browser and operating-system power settings may interrupt the schedule.</div>
+      <button id="downloadBackup" class="secondary">Download Settings Backup</button>
+      <label for="restoreBackup">Restore a previous settings backup (JSON)</label>
+      <input id="restoreBackup" type="file" accept=".json,application/json">
+    </div>
+  </div>
+</section>
+</div>
 </main>
 
-<footer>Digital Ghanti · Free School Bell System</footer>
+<footer>Digital Ghanti · Browser-based school bell manager · No payment required</footer>
 
 <script>
 "use strict";
 
 const $ = id => document.getElementById(id);
-
-let audioContext = null;
-let autoEnabled = false;
-let lastBellKey = "";
-let schedule = [];
-let voices = [];
+const STORE = "digitalGhantiCompleteV1";
+const DAYS = ["sun","mon","tue","wed","thu","fri","sat"];
+const TONES = [
+  {id:"classic",name:"Classic Bell"},
+  {id:"chime",name:"School Chime"},
+  {id:"double",name:"Double Bell"},
+  {id:"soft",name:"Soft Bell"},
+  {id:"alarm",name:"Alarm Tone"},
+  {id:"melody",name:"Melodic Chime"}
+];
 
 const defaultSchedule = [
-  {time:"09:00",name:"School Starts"},
-  {time:"09:45",name:"First Period"},
-  {time:"10:30",name:"Second Period"},
-  {time:"11:15",name:"Break Time"},
-  {time:"11:30",name:"Classes Resume"},
-  {time:"13:00",name:"Lunch Break"},
-  {time:"13:30",name:"Afternoon Classes"},
-  {time:"15:00",name:"School Ends"}
+  {time:"09:00",name:"School Starts",days:"weekdays",duration:3,tone:"classic",zone:"Whole School",announcement:"Good morning students and teachers. The school day is beginning.",voice:true},
+  {time:"10:30",name:"Short Break",days:"weekdays",duration:3,tone:"chime",zone:"Whole School",announcement:"It is time for a short break.",voice:true},
+  {time:"10:45",name:"Classes Resume",days:"weekdays",duration:3,tone:"classic",zone:"Whole School",announcement:"Please return to your classrooms.",voice:true},
+  {time:"13:00",name:"Lunch Break",days:"weekdays",duration:5,tone:"melody",zone:"Whole School",announcement:"It is time for lunch break.",voice:true},
+  {time:"15:30",name:"School Ends",days:"weekdays",duration:5,tone:"double",zone:"Whole School",announcement:"The school day has ended. Please leave safely.",voice:true}
 ];
 
-const ringtoneOptions = [
-  {name:"Classic School Bell",category:"School",freq:880,type:"square"},
-  {name:"Morning Alarm",category:"Alarm",freq:660,type:"sine"},
-  {name:"Digital Beep",category:"Digital",freq:1200,type:"sine"},
-  {name:"Notification Ping",category:"Digital",freq:1500,type:"sine"},
-  {name:"Funny Bounce",category:"Fun",freq:400,type:"triangle"},
-  {name:"Bird Chirp",category:"Nature",freq:1800,type:"sine"},
-  {name:"Calm Chime",category:"Music",freq:523,type:"sine"},
-  {name:"Gaming Alert",category:"Gaming",freq:1000,type:"square"},
-  {name:"Epic Alarm",category:"Alarm",freq:750,type:"sawtooth"},
-  {name:"Festival Tone",category:"Music",freq:600,type:"triangle"},
-  {name:"Pop Tone",category:"Music",freq:900,type:"sine"},
-  {name:"Rainy Mood",category:"Nature",freq:700,type:"sine"},
-  {name:"Robot Beep",category:"Gaming",freq:350,type:"square"},
-  {name:"Double Bell",category:"School",freq:1100,type:"square"},
-  {name:"Wake Up Chime",category:"Alarm",freq:800,type:"sine"},
-  {name:"Quick Message",category:"Digital",freq:1300,type:"triangle"},
-  {name:"Bright Melody",category:"Music",freq:980,type:"sine"}
-];
+let state = loadState();
+let audioContext = null;
+let activeNodes = [];
+let isEmergency = false;
+let micStream = null;
+let recorder = null;
+let micChunks = [];
+let micUrl = null;
+let lastFiredMinute = "";
+let lastEmergencyAt = 0;
 
-function getAudio() {
-  const AC = window.AudioContext || window.webkitAudioContext;
-  if (!AC) throw new Error("Web Audio is not supported by this browser.");
-  if (!audioContext) audioContext = new AC();
+function loadState(){
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORE) || "{}");
+    return {
+      schedule:Array.isArray(saved.schedule) ? saved.schedule : defaultSchedule.map(x=>({...x})),
+      logs:Array.isArray(saved.logs) ? saved.logs : [],
+      holidays:Array.isArray(saved.holidays) ? saved.holidays : [],
+      skipHolidays:saved.skipHolidays !== false,
+      examMode:!!saved.examMode,
+      autoEnabled:!!saved.autoEnabled,
+      announceScheduled:saved.announceScheduled !== false,
+      schoolName:saved.schoolName || "",
+      volume:Number(saved.volume) || 0.5,
+      voiceText:saved.voiceText || $("announcementText")?.value || "",
+      voiceRate:Number(saved.voiceRate) || 1,
+      voiceDelay:Number(saved.voiceDelay ?? 2),
+      voiceName:saved.voiceName || ""
+    };
+  } catch {
+    return {schedule:defaultSchedule.map(x=>({...x})),logs:[],holidays:[],
+      skipHolidays:true,examMode:false,autoEnabled:false,announceScheduled:true,
+      schoolName:"",volume:0.5,voiceText:"",voiceRate:1,voiceDelay:2,voiceName:""};
+  }
+}
+function persist(){
+  try {
+    localStorage.setItem(STORE,JSON.stringify(state));
+    return true;
+  } catch(e) {
+    console.error(e);
+    setStatus("Storage unavailable");
+    return false;
+  }
+}
+function setStatus(text){$("systemStatus").textContent="● "+text}
+function esc(value){
+  return String(value ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function logEvent(type,message,zone="Whole School"){
+  state.logs.unshift({time:new Date().toISOString(),type,message,zone});
+  state.logs=state.logs.slice(0,1000);
+  persist(); renderLogs(); updateMetrics();
+}
+function updateMetrics(){
+  const today=new Date().toLocaleDateString();
+  $("todayCount").textContent=state.logs.filter(x=>new Date(x.time).toLocaleDateString()===today&&x.type==="bell").length;
+  $("scheduleCount").textContent=state.schedule.length;
+  $("logCount").textContent=state.logs.length;
+}
+function updateClock(){
+  const now=new Date();
+  $("clock").textContent=now.toLocaleTimeString([], {hour12:true});
+  $("date").textContent=now.toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+}
+function validDuration(value,fallback=3,max=120){
+  const n=Number(value);
+  return Number.isFinite(n)?Math.max(0.5,Math.min(max,n)):fallback;
+}
+function getAudioContext(){
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC) throw new Error("Audio is not supported in this browser.");
+  if(!audioContext) audioContext=new AC();
   return audioContext;
 }
-
-async function playTone(freq, type, duration=0.25, startAt=0) {
-  const ctx = getAudio();
-  if (ctx.state === "suspended") await ctx.resume();
-
-  const start = ctx.currentTime + startAt;
-  const oscillator = ctx.createOscillator();
-  const gain = ctx.createGain();
-
-  oscillator.type = type || "sine";
-  oscillator.frequency.setValueAtTime(freq, start);
-  gain.gain.setValueAtTime(0.0001, start);
-  gain.gain.exponentialRampToValueAtTime(0.18, start + 0.02);
-  gain.gain.setValueAtTime(0.18, start + duration * 0.65);
-  gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
-
-  oscillator.connect(gain);
-  gain.connect(ctx.destination);
-  oscillator.start(start);
-  oscillator.stop(start + duration);
-}
-
-async function ringBell() {
-  const ctx = getAudio();
-  if (ctx.state === "suspended") await ctx.resume();
-
-  for (let i=0; i<3; i++) {
-    await playTone(880, "square", 0.45, i * 0.65);
+function stopAudio(){
+  if(window.speechSynthesis) window.speechSynthesis.cancel();
+  for(const node of activeNodes){
+    try{node.stop()}catch{}
+    try{node.disconnect()}catch{}
   }
+  activeNodes=[];
+  isEmergency=false;
+  setStatus(state.autoEnabled?"Automatic schedule enabled":"System ready");
 }
-
-function speak(text) {
-  return new Promise(resolve => {
-    if (!("speechSynthesis" in window)) {
-      $("voiceStatus").textContent = "Speech synthesis is not supported by this browser.";
-      resolve(false);
-      return;
-    }
-
-    const message = text.trim();
-    if (!message) {
-      $("voiceStatus").textContent = "Please enter an announcement first.";
-      resolve(false);
-      return;
-    }
-
-    speechSynthesis.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(message);
-    const chosenVoice = $("voiceSelect").value;
-    const voice = voices.find(v => v.name === chosenVoice);
-    if (voice) utterance.voice = voice;
-
-    utterance.rate = Number($("voiceRate").value);
-    utterance.onstart = () => {
-      $("voiceStatus").textContent = "Speaking announcement...";
-    };
-    utterance.onend = () => {
-      $("voiceStatus").textContent = "Announcement finished.";
-      resolve(true);
-    };
-    utterance.onerror = () => {
-      $("voiceStatus").textContent = "Could not play the voice. Try another voice.";
-      resolve(false);
-    };
-
-    speechSynthesis.speak(utterance);
-  });
-}
-
-async function announceThenRing() {
-  if ($("voiceEnabled").checked && $("announcement").value.trim()) {
-    await speak($("announcement").value);
-    const delay = Number($("announceDelay").value);
-    if (delay) {
-      await new Promise(resolve => setTimeout(resolve, delay * 1000));
-    }
-  }
-
-  await ringBell();
-}
-
-function updateClock() {
-  const now = new Date();
-  $("clock").textContent = now.toLocaleTimeString();
-  $("date").textContent = now.toLocaleDateString(undefined, {
-    weekday:"long",year:"numeric",month:"long",day:"numeric"
-  });
-
-  if (autoEnabled) {
-    const time = now.toTimeString().slice(0,5);
-    const key = now.toDateString() + " " + time;
-
-    if (now.getSeconds() === 0 && key !== lastBellKey) {
-      const item = schedule.find(entry => entry.time === time);
-      if (item) {
-        lastBellKey = key;
-        $("autoStatus").textContent = "Upcoming bell: " + item.name;
-        announceThenRing().catch(err => {
-          $("autoStatus").textContent = "Bell error: " + err.message;
-        });
-      }
-    }
-  }
-}
-
-function saveSchedule() {
-  localStorage.setItem("dgSchedule", JSON.stringify(schedule));
-}
-
-function drawSchedule() {
-  const list = $("scheduleList");
-  list.replaceChildren();
-
-  schedule.sort((a,b) => a.time.localeCompare(b.time));
-
-  schedule.forEach((entry,index) => {
-    const li = document.createElement("li");
-    const label = document.createElement("span");
-    label.textContent = entry.time + " — " + entry.name;
-
-    const remove = document.createElement("button");
-    remove.textContent = "Remove";
-    remove.className = "danger";
-    remove.type = "button";
-    remove.addEventListener("click", () => {
-      schedule.splice(index,1);
-      saveSchedule();
-      drawSchedule();
-      $("scheduleStatus").textContent = "Timetable updated.";
-    });
-
-    li.append(label,remove);
-    list.append(li);
-  });
-}
-
-function loadVoices() {
-  if (!("speechSynthesis" in window)) {
-    $("voiceStatus").textContent = "Voice announcements are not supported in this browser.";
-    return;
-  }
-
-  voices = speechSynthesis.getVoices();
-  const select = $("voiceSelect");
-  const previous = select.value;
-  select.replaceChildren();
-
-  const defaultOption = document.createElement("option");
-  defaultOption.value = "";
-  defaultOption.textContent = "Default device voice";
-  select.append(defaultOption);
-
-  voices.forEach(voice => {
-    const option = document.createElement("option");
-    option.value = voice.name;
-    option.textContent = voice.name + " (" + voice.lang + ")";
-    select.append(option);
-  });
-
-  if (voices.some(v => v.name === previous)) select.value = previous;
-}
-
-function saveVoiceSettings() {
-  const settings = {
-    announcement: $("announcement").value,
-    voice: $("voiceSelect").value,
-    rate: $("voiceRate").value,
-    delay: $("announceDelay").value,
-    enabled: $("voiceEnabled").checked
+function playTone(tone,duration,volumeOverride=null){
+  const ctx=getAudioContext();
+  if(ctx.state==="suspended") ctx.resume();
+  const length=validDuration(duration,3);
+  const vol=volumeOverride===null?state.volume:volumeOverride;
+  const start=ctx.currentTime;
+  const master=ctx.createGain();
+  master.gain.value=Math.max(0.01,Math.min(1,vol));
+  master.connect(ctx.destination);
+  const plans={
+    classic:[{f:880,t:0,d:length}],
+    chime:[{f:660,t:0,d:length*0.45},{f:880,t:length*0.48,d:length*0.45}],
+    double:[{f:880,t:0,d:length*0.35},{f:880,t:length*0.5,d:length*0.35}],
+    soft:[{f:523.25,t:0,d:length}],
+    alarm:[{f:740,t:0,d:length*0.45},{f:990,t:length*0.48,d:length*0.45}],
+    melody:[{f:523.25,t:0,d:length*0.22},{f:659.25,t:length*0.25,d:length*0.22},{f:783.99,t:length*0.5,d:length*0.22},{f:1046.5,t:length*0.75,d:length*0.22}]
   };
-  localStorage.setItem("dgVoiceSettings", JSON.stringify(settings));
-  $("voiceStatus").textContent = "Announcement settings saved on this device.";
+  const items=plans[tone]||plans.classic;
+  items.forEach(item=>{
+    const when=start+item.t;
+    const end=Math.min(start+length,when+item.d);
+    if(end<=when)return;
+    const osc=ctx.createOscillator(), gain=ctx.createGain();
+    osc.type=tone==="alarm"?"square":"sine";
+    osc.frequency.setValueAtTime(item.f,when);
+    gain.gain.setValueAtTime(0.0001,when);
+    gain.gain.exponentialRampToValueAtTime(0.7,when+0.025);
+    gain.gain.setValueAtTime(0.7,Math.max(when+0.03,end-0.04));
+    gain.gain.exponentialRampToValueAtTime(0.0001,end);
+    osc.connect(gain);gain.connect(master);
+    osc.start(when);osc.stop(end+0.02);
+    activeNodes.push(osc);
+    osc.onended=()=>{
+      try{osc.disconnect();gain.disconnect()}catch{}
+      activeNodes=activeNodes.filter(n=>n!==osc);
+    };
+  });
+  setTimeout(()=>{try{master.disconnect()}catch{}},(length+1)*1000);
+  return new Promise(resolve=>setTimeout(resolve,length*1000));
 }
-
-function loadVoiceSettings() {
-  try {
-    const saved = JSON.parse(localStorage.getItem("dgVoiceSettings") || "null");
-    if (!saved) return;
-    $("announcement").value = saved.announcement ?? $("announcement").value;
-    $("voiceRate").value = saved.rate ?? "0.9";
-    $("announceDelay").value = saved.delay ?? "3";
-    $("voiceEnabled").checked = saved.enabled ?? true;
-    window.savedVoiceName = saved.voice || "";
-  } catch (error) {
-    console.warn("Voice settings could not be loaded.", error);
+function getSelectedVoice(){
+  const voices=window.speechSynthesis?.getVoices()||[];
+  return voices.find(v=>v.name===$("voiceSelect").value)||null;
+}
+function speak(text){
+  return new Promise(resolve=>{
+    if(!text||!window.speechSynthesis){resolve(false);return;}
+    window.speechSynthesis.cancel();
+    const utterance=new SpeechSynthesisUtterance(text);
+    utterance.rate=Number($("voiceRate").value)||1;
+    const voice=getSelectedVoice();
+    if(voice) utterance.voice=voice;
+    utterance.onend=()=>resolve(true);
+    utterance.onerror=()=>resolve(false);
+    window.speechSynthesis.speak(utterance);
+  });
+}
+function populateVoices(){
+  if(!window.speechSynthesis)return;
+  const old=state.voiceName||$("voiceSelect").value;
+  const voices=window.speechSynthesis.getVoices();
+  $("voiceSelect").innerHTML='<option value="">Default device voice</option>';
+  voices.forEach(v=>{
+    const option=document.createElement("option");
+    option.value=v.name;option.textContent=v.name+" ("+v.lang+")";
+    $("voiceSelect").appendChild(option);
+  });
+  if(voices.some(v=>v.name===old)) $("voiceSelect").value=old;
+}
+function speakSaved(text){
+  const oldText=$("announcementText").value;
+  const oldVoice=$("voiceSelect").value;
+  $("announcementText").value=text;
+  if(state.voiceName)$("voiceSelect").value=state.voiceName;
+  return speak(text).finally(()=>{
+    $("announcementText").value=oldText;
+    $("voiceSelect").value=oldVoice;
+  });
+}
+async function ringBell({duration=3,tone="classic",name="Manual Bell",zone="Whole School",emergency=false}={}){
+  if(isEmergency&&!emergency)return;
+  try{
+    await playTone(tone,duration,emergency?Math.max(state.volume,0.75):null);
+    logEvent(emergency?"emergency":"bell",name+" · "+duration+" seconds",zone);
+  }catch(e){
+    logEvent("error",e.message||"Unable to play audio",zone);
+    alert("Could not play audio. Please click the page and try again.");
   }
 }
-
-function renderRingtones() {
-  const grid = $("ringtoneGrid");
-  grid.replaceChildren();
-
-  const search = $("ringtoneSearch").value.trim().toLowerCase();
-  const category = $("categoryFilter").value;
-
-  ringtoneOptions
-    .filter(item => item.name.toLowerCase().includes(search))
-    .filter(item => category === "all" || item.category === category)
-    .forEach(item => {
-      const card = document.createElement("div");
-      card.className = "ringtone-card";
-
-      const title = document.createElement("h3");
-      title.textContent = item.name;
-
-      const info = document.createElement("p");
-      info.textContent = item.category + " · Free preview";
-
-      const button = document.createElement("button");
-      button.textContent = "▶ Preview";
-      button.addEventListener("click", async () => {
-        try {
-          await playTone(item.freq,item.type,0.35);
-          await playTone(item.freq * 1.25,item.type,0.35,0.4);
-        } catch (error) {
-          alert(error.message);
-        }
-      });
-
-      card.append(title,info,button);
-      grid.append(card);
-    });
+async function announceThenRing(entry){
+  if(isEmergency)return;
+  const message=state.announceScheduled&&entry.voice&&entry.announcement?entry.announcement:"";
+  if(message){
+    logEvent("voice","Scheduled announcement: "+message,entry.zone);
+    await speakSaved(message);
+    if(isEmergency)return;
+    await new Promise(resolve=>setTimeout(resolve,state.voiceDelay*1000));
+  }
+  if(isEmergency)return;
+  await ringBell({duration:entry.duration,tone:entry.tone,name:entry.name,zone:entry.zone});
 }
-
-$("manualBell").addEventListener("click", async () => {
-  try {
-    await ringBell();
-    $("manualStatus").textContent = "School bell played.";
-  } catch (error) {
-    $("manualStatus").textContent = error.message;
+function dayMatches(rule,day){
+  if(rule==="everyday")return true;
+  if(rule==="weekdays")return day>=1&&day<=5;
+  if(rule==="weekend")return day===0||day===6;
+  return rule===DAYS[day];
+}
+function isHoliday(dateString){
+  return state.skipHolidays&&state.holidays.includes(dateString);
+}
+function schedulerTick(){
+  updateClock();
+  if(!state.autoEnabled)return;
+  const now=new Date();
+  const dateString=[now.getFullYear(),String(now.getMonth()+1).padStart(2,"0"),String(now.getDate()).padStart(2,"0")].join("-");
+  if(isHoliday(dateString))return;
+  const minute= dateString+" "+String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
+  if(minute===lastFiredMinute)return;
+  const entries=state.schedule.filter(e=>{
+    if(e.time!==minute.slice(11))return false;
+    if(!dayMatches(e.days,now.getDay()))return false;
+    if(state.examMode&&!/exam/i.test(e.name))return false;
+    return true;
+  });
+  if(entries.length){
+    lastFiredMinute=minute;
+    entries.forEach(e=>announceThenRing({...e}));
   }
-});
-
-$("testBell").addEventListener("click", async () => {
-  try {
-    await playTone(880,"sine",0.3);
-    $("manualStatus").textContent = "Test sound played.";
-  } catch (error) {
-    $("manualStatus").textContent = error.message;
-  }
-});
-
-$("previewVoice").addEventListener("click", () => {
-  speak($("announcement").value);
-});
-
-$("stopVoice").addEventListener("click", () => {
-  if ("speechSynthesis" in window) speechSynthesis.cancel();
-  $("voiceStatus").textContent = "Voice stopped.";
-});
-
-$("saveVoice").addEventListener("click", saveVoiceSettings);
-
-$("autoButton").addEventListener("click", () => {
-  autoEnabled = !autoEnabled;
-  $("autoButton").textContent = autoEnabled
-    ? "Disable Automatic Bell" : "Enable Automatic Bell";
-  $("autoStatus").textContent = autoEnabled
-    ? "Automatic bell is ON. Keep this page open." : "Automatic bell is OFF.";
-});
-
-$("scheduleForm").addEventListener("submit", event => {
-  event.preventDefault();
-  const time = $("bellTime").value;
-  const name = $("bellLabel").value.trim();
-
-  if (!time || !name) return;
-  schedule.push({time,name});
-  saveSchedule();
-  drawSchedule();
+}
+function renderSchedule(){
+  const host=$("scheduleList");
+  if(!state.schedule.length){host.innerHTML='<div class="empty">No bells scheduled yet.</div>';return;}
+  const sorted=[...state.schedule].sort((a,b)=>a.time.localeCompare(b.time));
+  host.innerHTML=sorted.map(e=>`
+    <div class="item">
+      <div class="item-main">
+        <strong>${esc(e.time)} · ${esc(e.name)}</strong><br>
+        <span class="small">${esc(e.days)} · ${esc(e.duration)}s · ${esc(e.tone)} · ${esc(e.zone)}</span><br>
+        ${e.announcement?'<span class="small">Voice: '+esc(e.announcement)+'</span>':''}
+        ${state.examMode&&!/exam/i.test(e.name)?'<br><span class="tag">Skipped in exam mode</span>':''}
+      </div>
+      <div class="item-buttons">
+        <button class="secondary" data-edit="${esc(e.id)}">Edit</button>
+        <button class="secondary" data-test="${esc(e.id)}">Test</button>
+        <button class="danger" data-delete="${esc(e.id)}">Delete</button>
+      </div>
+    </div>`).join("");
+  host.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>editBell(b.dataset.edit));
+  host.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>deleteBell(b.dataset.delete));
+  host.querySelectorAll("[data-test]").forEach(b=>b.onclick=()=>{
+    const e=state.schedule.find(x=>x.id===b.dataset.test);
+    if(e)announceThenRing({...e});
+  });
+}
+function resetScheduleForm(){
   $("scheduleForm").reset();
-  $("scheduleStatus").textContent = "Bell added to timetable.";
-});
-
-$("resetSchedule").addEventListener("click", () => {
-  schedule = defaultSchedule.map(item => ({...item}));
-  saveSchedule();
-  drawSchedule();
-  $("scheduleStatus").textContent = "Example timetable restored.";
-});
-
-$("ringtoneSearch").addEventListener("input",renderRingtones);
-$("categoryFilter").addEventListener("change",renderRingtones);
-
-try {
-  const savedSchedule = JSON.parse(localStorage.getItem("dgSchedule") || "null");
-  schedule = Array.isArray(savedSchedule) ? savedSchedule : defaultSchedule.map(item => ({...item}));
-} catch (error) {
-  schedule = defaultSchedule.map(item => ({...item}));
+  $("editId").value="";
+  $("bellLength").value=3;
+  $("bellTone").value="classic";
+  $("bellDays").value="weekdays";
+  $("bellZone").value="Whole School";
+  $("bellVoice").checked=true;
+  $("saveBell").textContent="＋ Add to Schedule";
+  $("cancelEdit").hidden=true;
 }
-
-loadVoiceSettings();
-loadVoices();
-
-if ("speechSynthesis" in window) {
-  speechSynthesis.onvoiceschanged = () => {
-    const oldVoice = window.savedVoiceName || "";
-    loadVoices();
-    if (oldVoice && voices.some(v => v.name === oldVoice)) {
-      $("voiceSelect").value = oldVoice;
-    }
-  };
+function editBell(id){
+  const e=state.schedule.find(x=>x.id===id);
+  if(!e)return;
+  $("editId").value=e.id;
+  $("bellTime").value=e.time;
+  $("bellName").value=e.name;
+  $("bellDays").value=e.days;
+  $("bellLength").value=e.duration;
+  $("bellTone").value=e.tone;
+  $("bellZone").value=e.zone;
+  $("bellAnnouncement").value=e.announcement||"";
+  $("bellVoice").checked=e.voice!==false;
+  $("saveBell").textContent="Save Bell Changes";
+  $("cancelEdit").hidden=false;
+  $("schedule").scrollIntoView({behavior:"smooth"});
 }
+function deleteBell(id){
+  if(!confirm("Delete this scheduled bell?"))return;
+  state.schedule=state.schedule.filter(e=>e.id!==id);
+  persist();renderSchedule();updateMetrics();logEvent("bell","Deleted a scheduled bell");
+}
+function renderTones(){
+  $("toneGrid").innerHTML=TONES.map(t=>`
+    <div class="tone"><strong>${esc(t.name)}</strong>
+    <button class="secondary" data-tone="${t.id}">▶ Preview</button></div>`).join("");
+  $("toneGrid").querySelectorAll("[data-tone]").forEach(b=>b.onclick=()=>ringBell({
+    tone:b.dataset.tone,duration:3,name:"Sound preview: "+TONES.find(t=>t.id===b.dataset.tone).name
+  }));
+}
+function renderLogs(){
+  const filter=$("logFilter").value;
+  const query=$("logSearch").value.trim().toLowerCase();
+  const logs=state.logs.filter(e=>(filter==="all"||e.type===filter)&&
+    (e.message+" "+e.zone+" "+e.type).toLowerCase().includes(query)).slice(0,100);
+  $("logList").innerHTML=logs.length?logs.map(e=>`
+    <div class="item"><div class="item-main">
+    <strong>${esc(new Date(e.time).toLocaleString())}</strong><br>
+    <span class="tag ${e.type==="emergency"?"red":e.type==="bell"?"green":""}">${esc(e.type)}</span>
+    <span class="small">${esc(e.zone)}</span><br>${esc(e.message)}
+    </div></div>`).join(""):'<div class="empty">No matching logs.</div>';
+}
+function saveVoiceSettings(){
+  state.voiceText=$("announcementText").value;
+  state.voiceRate=Number($("voiceRate").value)||1;
+  state.voiceDelay=Number($("voiceDelay").value)||0;
+  state.voiceName=$("voiceSelect").value;
+  persist();
+  logEvent("voice","Voice settings saved");
+}
+function loadSettingsIntoUI(){
+  $("holidayDates").value=state.holidays.join("\n");
+  $("skipHolidays").checked=state.skipHolidays;
+  $("examMode").checked=state.examMode;
+  $("autoEnabled").checked=state.autoEnabled;
+  $("announceScheduled").checked=state.announceScheduled;
+  $("schoolName").value=state.schoolName;
+  $("volume").value=state.volume;
+  $("announcementText").value=state.voiceText||"Good morning students and teachers. Please prepare for the next period.";
+  $("voiceRate").value=state.voiceRate;
+  $("voiceDelay").value=String(state.voiceDelay);
+}
+$("scheduleForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const duration=Number($("bellLength").value);
+  if(!Number.isFinite(duration)||duration<0.5||duration>120){alert("Duration must be between 0.5 and 120 seconds.");return;}
+  const id=$("editId").value||("bell-"+Date.now()+"-"+Math.random().toString(36).slice(2,7));
+  const entry={id,time:$("bellTime").value,name:$("bellName").value.trim(),
+    days:$("bellDays").value,duration,tone:$("bellTone").value,
+    zone:$("bellZone").value,announcement:$("bellAnnouncement").value.trim(),
+    voice:$("bellVoice").checked};
+  const index=state.schedule.findIndex(x=>x.id===id);
+  if(index>=0)state.schedule[index]=entry;else state.schedule.push(entry);
+  state.schedule.sort((a,b)=>a.time.localeCompare(b.time));
+  persist();renderSchedule();updateMetrics();resetScheduleForm();
+  logEvent("bell",(index>=0?"Updated: ":"Added: ")+entry.name,entry.zone);
+});
+$("cancelEdit").onclick=resetScheduleForm;
+$("restoreSchedule").onclick=()=>{
+  if(!confirm("Replace your current schedule with the example schedule?"))return;
+  state.schedule=defaultSchedule.map((e,i)=>({...e,id:"example-"+i}));
+  persist();renderSchedule();updateMetrics();resetScheduleForm();
+  logEvent("bell","Restored example schedule");
+};
+$("saveCalendar").onclick=()=>{
+  state.holidays=[...new Set($("holidayDates").value.split(/\s+/).map(s=>s.trim()).filter(s=>/^\d{4}-\d{2}-\d{2}$/.test(s)))];
+  state.skipHolidays=$("skipHolidays").checked;
+  state.examMode=$("examMode").checked;
+  persist();logEvent("bell","Calendar and exam settings saved");renderSchedule();
+};
+$("ringNow").onclick=()=>ringBell({
+  duration:validDuration($("quickDuration").value,3),
+  tone:$("quickTone").value,name:"Manual bell"
+});
+$("stopAudio").onclick=()=>{stopAudio();setStatus("Audio stopped");logEvent("bell","Audio stopped manually")};
+$("previewVoice").onclick=async()=>{
+  saveVoiceSettings();
+  await speak($("announcementText").value.trim());
+};
+$("stopVoice").onclick=()=>{if(window.speechSynthesis)window.speechSynthesis.cancel()};
+$("saveVoice").onclick=saveVoiceSettings;
+$("zoneSelect").onchange=()=>{$("zoneNotice").textContent="Selected zone: "+$("zoneSelect").value};
+$("zoneSpeak").onclick=async()=>{
+  const zone=$("zoneSelect").value,message=$("zoneMessage").value.trim();
+  if(!message){alert("Enter an announcement first.");return;}
+  logEvent("voice","Zone announcement: "+message,zone);
+  await speak(message);
+};
+$("zoneRing").onclick=()=>ringBell({duration:validDuration($("quickDuration").value,3),tone:$("quickTone").value,name:"Zone bell",zone:$("zoneSelect").value});
 
-drawSchedule();
-renderRingtones();
-updateClock();
-setInterval(updateClock,250);
+$("emergencyStart").onclick=async()=>{
+  if(!confirm("Start the emergency alarm on this device?"))return;
+  stopAudio();isEmergency=true;setStatus("EMERGENCY ALARM ACTIVE");
+  const message=$("emergencyMessage").value.trim();
+  if(message){logEvent("emergency","Emergency announcement: "+message);await speak(message)}
+  if(!isEmergency)return;
+  await ringBell({duration:validDuration($("emergencyDuration").value,15),tone:"alarm",name:"Emergency alarm",emergency:true});
+  if(isEmergency){isEmergency=false;setStatus(state.autoEnabled?"Automatic schedule enabled":"System ready")}
+};
+$("emergencyStop").onclick=()=>{stopAudio();isEmergency=false;setStatus("Emergency stopped");logEvent("emergency","Emergency alarm stopped")};
 
+$("startMic").onclick=async()=>{
+  try{
+    micStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    micChunks=[];
+    recorder=new MediaRecorder(micStream);
+    recorder.ondataavailable=e=>{if(e.data.size)micChunks.push(e.data)};
+    recorder.onstop=()=>{
+      const blob=new Blob(micChunks,{type:recorder.mimeType||"audio/webm"});
+      if(micUrl)URL.revokeObjectURL(micUrl);
+      micUrl=URL.createObjectURL(blob);
+      $("micPlayback").src=micUrl;$("micPlayback").hidden=false;
+      micStream?.getTracks().forEach(t=>t.stop());micStream=null;
+      $("micStatus").textContent="Recording ready. Press Play to listen on this device.";
+      logEvent("voice","Microphone announcement recorded");
+    };
+    recorder.start();
+    $("startMic").disabled=true;$("stopMic").disabled=false;
+    $("micStatus").textContent="Recording... Speak clearly into your microphone.";
+  }catch(e){
+    $("micStatus").textContent="Microphone unavailable. Allow microphone permission and use HTTPS or localhost.";
+    logEvent("error","Microphone recording failed: "+e.message);
+  }
+};
+$("stopMic").onclick=()=>{
+  if(recorder&&recorder.state!=="inactive")recorder.stop();
+  $("startMic").disabled=false;$("stopMic").disabled=true;
+};
+$("saveSettings").onclick=()=>{
+  state.schoolName=$("schoolName").value.trim();
+  state.volume=Number($("volume").value)||0.5;
+  state.autoEnabled=$("autoEnabled").checked;
+  state.announceScheduled=$("announceScheduled").checked;
+  persist();setStatus(state.autoEnabled?"Automatic schedule enabled":"System ready");
+  logEvent("bell","System settings saved");
+};
+$("autoEnabled").onchange=()=>{
+  state.autoEnabled=$("autoEnabled").checked;
+  persist();setStatus(state.autoEnabled?"Automatic schedule enabled":"Automatic schedule disabled");
+  logEvent("bell",state.autoEnabled?"Automatic schedule enabled":"Automatic schedule disabled");
+};
+$("announceScheduled").onchange=()=>{
+  state.announceScheduled=$("announceScheduled").checked;persist();
+};
+$("logFilter").onchange=renderLogs;
+$("logSearch").oninput=renderLogs;
+$("clearLogs").onclick=()=>{
+  if(!confirm("Permanently clear all logs stored in this browser?"))return;
+  state.logs=[];persist();renderLogs();updateMetrics();
+};
+$("exportLogs").onclick=()=>{
+  const csvRows=[["Time","Type","Zone","Message"],...state.logs.map(e=>[e.time,e.type,e.zone,e.message])];
+  const csv=csvRows.map(row=>row.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");
+  const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+  const a=document.createElement("a");a.href=url;a.download="digital-ghanti-report.csv";a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+$("downloadBackup").onclick=()=>{
+  const url=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}));
+  const a=document.createElement("a");a.href=url;a.download="digital-ghanti-backup.json";a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+$("restoreBackup").onchange=async e=>{
+  const file=e.target.files?.[0];if(!file)return;
+  try{
+    const imported=JSON.parse(await file.text());
+    if(!imported||!Array.isArray(imported.schedule)||!Array.isArray(imported.logs))throw new Error("Invalid backup format");
+    if(!confirm("Replace current settings, schedule and logs with this backup?"))return;
+    state={...state,...imported};
+    persist();loadSettingsIntoUI();renderSchedule();renderLogs();updateMetrics();
+    logEvent("bell","Settings backup restored");
+  }catch(err){alert("Could not restore backup: "+err.message)}
+  finally{e.target.value=""}
+};
+
+loadSettingsIntoUI();
+renderSchedule();renderTones();renderLogs();updateMetrics();updateClock();
+populateVoices();
+if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=populateVoices;
+setInterval(schedulerTick,1000);
+setStatus(state.autoEnabled?"Automatic schedule enabled":"System ready");
 </script>
 </body>
 </html>
