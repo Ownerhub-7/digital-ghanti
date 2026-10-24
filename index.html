@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital Ghanti</title>
+<style>
+body{font-family:Arial,sans-serif;background:#eef3fa;color:#183153;text-align:center;margin:0}
+header{background:#17345c;color:white;padding:25px}
+h1{margin:0}
+#clock{font-size:48px;font-weight:bold;margin:20px}
+main{max-width:650px;margin:20px auto;padding:20px}
+section{background:white;padding:20px;margin:15px 0;border-radius:14px;box-shadow:0 3px 12px #0001}
+button{padding:12px 18px;margin:5px;border:0;border-radius:8px;background:#1761cf;color:white;cursor:pointer;font-size:16px}
+input{padding:10px;margin:5px;border:1px solid #bbb;border-radius:6px}
+li{padding:10px;text-align:left;border-bottom:1px solid #ddd}
+li button{float:right;padding:5px 9px}
+</style>
+</head>
+<body>
+<header>
+<h1>🔔 Digital Ghanti</h1>
+<p>School Bell Management System</p>
+<div id="clock">00:00:00</div>
+<div id="date"></div>
+</header>
+<main>
+<section>
+<h2>Manual Bell</h2>
+<button onclick="ring()">🔔 Ring Bell Now</button>
+<button onclick="testSound()">Test Sound</button>
+<p id="status">Ready</p>
+</section>
+<section>
+<h2>Automatic Bell</h2>
+<button onclick="toggleAuto()" id="autoBtn">Enable Automatic Bell</button>
+<p id="autoStatus">Automatic mode is OFF</p>
+<p>Keep this page open and your device awake.</p>
+</section>
+<section>
+<h2>School Timetable</h2>
+<form id="form">
+<input type="time" id="time" required>
+<input id="label" placeholder="Period / Break name" required>
+<button type="submit">Add Bell</button>
+</form>
+<ul id="list" style="list-style:none;padding:0"></ul>
+</section>
+</main>
+<script>
+let schedule=[];
+let enabled=false;
+let audio;
+try{schedule=JSON.parse(localStorage.getItem("ghantiSchedule")||"[]")}catch(e){}
+const $=id=>document.getElementById(id);
+function draw(){
+$("list").innerHTML="";
+schedule.sort((a,b)=>a.time.localeCompare(b.time)).forEach((s,i)=>{
+let li=document.createElement("li");
+li.append(document.createTextNode(s.time+" — "+s.name+" "));
+let b=document.createElement("button");
+b.textContent="Remove";
+b.onclick=()=>{schedule.splice(i,1);save();draw()};
+li.append(b);$("list").append(li);
+});
+}
+function save(){try{localStorage.setItem("ghantiSchedule",JSON.stringify(schedule))}catch(e){}}
+function ring(){
+try{
+let A=window.AudioContext||window.webkitAudioContext;
+if(!A){$("status").textContent="Audio is not supported";return}
+if(!audio)audio=new A();
+if(audio.state==="suspended")audio.resume();
+let start=audio.currentTime;
+[0,.35,.7,1.05].forEach((d,i)=>{
+[880,1175,1568].forEach((f,j)=>{
+let o=audio.createOscillator(),g=audio.createGain();
+o.type="sine";o.frequency.value=f;
+g.gain.setValueAtTime(.0001,start+d);
+g.gain.exponentialRampToValueAtTime(.08/(j+1),start+d+.02);
+g.gain.exponentialRampToValueAtTime(.0001,start+d+.5);
+o.connect(g);g.connect(audio.destination);
+o.start(start+d);o.stop(start+d+.55);
+});
+});
+$("status").textContent="Bell rang!";
+}catch(e){$("status").textContent="Click Test Sound and check volume."}
+}
+function testSound(){ring()}
+$("form").onsubmit=e=>{
+e.preventDefault();
+schedule.push({time:$("time").value,name:$("label").value.trim()});
+save();draw();$("label").value="";
+};
+function toggleAuto(){
+enabled=!enabled;
+$("autoBtn").textContent=enabled?"Disable Automatic Bell":"Enable Automatic Bell";
+$("autoStatus").textContent=enabled?"Automatic mode is ON":"Automatic mode is OFF";
+if(enabled)ring();
+}
+let lastBell="";
+function tick(){
+let d=new Date(),hh=String(d.getHours()).padStart(2,"0"),mm=String(d.getMinutes()).padStart(2,"0");
+$("clock").textContent=d.toLocaleTimeString();
+$("date").textContent=d.toLocaleDateString();
+if(enabled){
+let key=d.toDateString()+" "+hh+":"+mm;
+if(d.getSeconds()<2&&key!==lastBell){
+let s=schedule.find(x=>x.time===hh+":"+mm);
+if(s){lastBell=key;ring();$("status").textContent="Automatic bell: "+s.name}
+}
+}
+}
+draw();tick();setInterval(tick,500);
+</script>
+</body>
+</html>
